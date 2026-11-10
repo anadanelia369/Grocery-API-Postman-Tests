@@ -610,7 +610,7 @@
                   "response": []
                 },
                 {
-                  "name": "et Products results=-1",
+                  "name": "Get Products results=-1",
                   "event": [
                     {
                       "listen": "test",
