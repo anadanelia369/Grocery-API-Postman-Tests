@@ -1,0 +1,1142 @@
+{
+  "info": {
+    "_postman_id": "0d1b5362-a8c9-4135-97f7-5c6ac7fd6b01",
+    "name": "Simple Grocery Store API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "50799714",
+    "_collection_link": "https://go.postman.co/collection/50799714-0d1b5362-a8c9-4135-97f7-5c6ac7fd6b01?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Status",
+      "item": [
+        {
+          "name": "Positive",
+          "item": [
+            {
+              "name": "GET Status - Service is UP",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Status is UP\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.status).to.eql(\"UP\");\r\n});\r\n"
+                    ]
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "console.clear()"
+                    ]
+                  }
+                }
+              ],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "status"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Negative",
+          "item": [
+            {
+              "name": "POST Status - Method Not Allowed",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "// FINDING: POST /status returns 404 Not Found instead of 405 Method Not Allowed,\r\n// and no Allow header is present. Minor deviation from REST conventions (RFC 9110),\r\n// likely caused by AWS API Gateway's default handling of unmatched routes.\r\n// Low severity, not a functional defect. Reproducibility: 2/2.\r\n\r\npm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"The resource could not be found. Check your endpoint and request method.\");\r\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "status"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "GET Status - Invalid Path",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"The resource could not be found. Check your endpoint and request method.\");\r\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/statuss",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "statuss"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "GET Status - Uppercase Path",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "// Path matching is case-sensitive: /STATUS returns 404, consistent with RFC 3986.\r\n\r\npm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"The resource could not be found. Check your endpoint and request method.\");\r\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/STATUS",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "STATUS"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Positive",
+          "item": [
+            {
+              "name": "results",
+              "item": [
+                {
+                  "name": "Get Products results=20",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Exactly 20 products returned\", function () {\r\n    pm.expect(pm.response.json()).to.have.length(20);\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products?results=20",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ],
+                      "query": [
+                        {
+                          "key": "results",
+                          "value": "20"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get Products results=1",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Exactly 1 product returned\", function () {\r\n    pm.expect(pm.response.json()).to.have.length(1);\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products?results=1",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ],
+                      "query": [
+                        {
+                          "key": "results",
+                          "value": "1"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "category",
+              "item": [
+                {
+                  "name": "Get Products category=coffee",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"All products are in the coffee category\", function () {\r\n    const products = pm.response.json();\r\n    pm.expect(products).to.not.be.empty;\r\n    products.forEach(function (product) {\r\n        pm.expect(product.category).to.eql(\"coffee\");\r\n    });\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products?category=coffee",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ],
+                      "query": [
+                        {
+                          "key": "category",
+                          "value": "coffee"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "available",
+              "item": [
+                {
+                  "name": "Get Products available=true",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"All returned products are in stock\", function () {\r\n    const products = pm.response.json();\r\n    pm.expect(products).to.not.be.empty;\r\n    products.forEach(function (product) {\r\n        pm.expect(product.inStock).to.eql(true);\r\n    });\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products?available=true",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ],
+                      "query": [
+                        {
+                          "key": "available",
+                          "value": "true"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get Products available=false",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"All returned products are out of stock\", function () {\r\n    const products = pm.response.json();\r\n    pm.expect(products).to.not.be.empty;\r\n    products.forEach(function (product) {\r\n        pm.expect(product.inStock).to.eql(false);\r\n    });\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products?available=false",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ],
+                      "query": [
+                        {
+                          "key": "available",
+                          "value": "false"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Get a product",
+              "item": [
+                {
+                  "name": "Get a Product",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Product has correct id\", function () {\r\n    pm.expect(pm.response.json().id).to.eql(1225);\r\n});\r\n\r\npm.test(\"Product has required fields\", function () {\r\n    const product = pm.response.json();\r\n    pm.expect(product).to.have.property(\"category\");\r\n    pm.expect(product).to.have.property(\"name\");\r\n    pm.expect(product).to.have.property(\"inStock\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products/:productId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products",
+                        ":productId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "productId",
+                          "value": "1225"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get a Product product-label=true",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response contains product-label\", function () {\r\n    pm.expect(pm.response.json()).to.have.property(\"product-label\");\r\n});\r\n\r\npm.test(\"Product label is a base64 PDF\", function () {\r\n    pm.expect(pm.response.json()[\"product-label\"]).to.include(\"pdf;base64,\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products/:productId?product-label=true",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products",
+                        ":productId"
+                      ],
+                      "query": [
+                        {
+                          "key": "product-label",
+                          "value": "true"
+                        }
+                      ],
+                      "variable": [
+                        {
+                          "key": "productId",
+                          "value": "1225"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Negative",
+          "item": [
+            {
+              "name": "results",
+              "item": [
+                {
+                  "name": "Get Products results=21",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"Invalid value for query parameter 'results'. Cannot be greater than 20.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products?results=21",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ],
+                      "query": [
+                        {
+                          "key": "results",
+                          "value": "21"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get Products results=0 [Known Issue]",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products?results=0",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ],
+                      "query": [
+                        {
+                          "key": "results",
+                          "value": "0"
+                        }
+                      ]
+                    },
+                    "description": "Expected (per API documentation): 400 Bad Request, since \"results\" must be between 1 and 20.  \nActual: 200 OK and the full product list is returned.  \nNote: results=21 and results=-1 are correctly rejected with 400, so only the boundary value 0 is not validated.  \n  \nNote: for results=-1 the API returns the message \"Must be greater than 0\", yet results=0 is accepted and returns 200, so the API does not follow its own validation rule."
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get Products results=abc [Known Issue]",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products?results=abc",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ],
+                      "query": [
+                        {
+                          "key": "results",
+                          "value": "abc"
+                        }
+                      ]
+                    },
+                    "description": "Expected (per API documentation): 400 Bad Request, since \"results\" must be an integer between 1 and 20.  \nActual: 200 OK and the full product list is returned.  \nNote: the invalid value is ignored instead of being rejected."
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get Products results=empty",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products?results",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ],
+                      "query": [
+                        {
+                          "key": "results",
+                          "value": ""
+                        }
+                      ]
+                    },
+                    "description": "Expected (per API documentation): 400 Bad Request, since \"results\" must be an integer between 1 and 20.  \nActual: 200 OK and the full product list is returned.  \nNote: the documentation does not explicitly describe how an empty value should be handled, so the expected result is inferred from the general rule that invalid parameters return 400. The empty value is ignored, same as results=0 and results=abc."
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get Products results=null [Known Issue]",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products?results=null",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ],
+                      "query": [
+                        {
+                          "key": "results",
+                          "value": "null"
+                        }
+                      ]
+                    },
+                    "description": "Expected (per API documentation): 400 Bad Request, since \"results\" must be an integer between 1 and 20.  \nActual: 200 OK and the full product list is returned.  \nNote: \"null\" is sent as a literal text value (query parameters are always strings). It is ignored, same as results=0, results=abc and an empty value."
+                  },
+                  "response": []
+                },
+                {
+                  "name": "et Products results=-1",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"Invalid value for query parameter 'results'. Must be greater than 0.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products?results=-1",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ],
+                      "query": [
+                        {
+                          "key": "results",
+                          "value": "-1"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "category",
+              "item": [
+                {
+                  "name": "Get Products category=COFFEE",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"Invalid value for query parameter 'category'. Must be one of: coffee, fresh-produce, meat-seafood, candy, dairy, bread-bakery, eggs\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products?category=COFFEE",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ],
+                      "query": [
+                        {
+                          "key": "category",
+                          "value": "COFFEE"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get Products category=empty",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products?category",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ],
+                      "query": [
+                        {
+                          "key": "category",
+                          "value": ""
+                        }
+                      ]
+                    },
+                    "description": "Expected: 400 Bad Request, since \"category\" must be one of: coffee, fresh-produce, meat-seafood, candy, dairy, bread-bakery, eggs (the same rule that rejects category=abc).  \nActual: 200 OK and the full product list is returned.  \nNote: the empty value is ignored instead of being rejected, same behavior as results= (empty)."
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get Products category=abc",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"Invalid value for query parameter 'category'. Must be one of: coffee, fresh-produce, meat-seafood, candy, dairy, bread-bakery, eggs\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products?category=abc",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ],
+                      "query": [
+                        {
+                          "key": "category",
+                          "value": "abc"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "available",
+              "item": [
+                {
+                  "name": "Get Products available=abc",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"Invalid value for query parameter 'available'. Must be one of: true, false\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products?available=abc",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ],
+                      "query": [
+                        {
+                          "key": "available",
+                          "value": "abc"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get Products available=TRUE",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"Invalid value for query parameter 'available'. Must be one of: true, false\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products?available=TRUE",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ],
+                      "query": [
+                        {
+                          "key": "available",
+                          "value": "TRUE"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get Products available=empty",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products?available",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ],
+                      "query": [
+                        {
+                          "key": "available",
+                          "value": ""
+                        }
+                      ]
+                    },
+                    "description": "Expected: 400 Bad Request, since \"available\" must be one of: true, false (the same rule that rejects available=abc).  \nActual: 200 OK and the full product list is returned, including out-of-stock items.  \nNote: the empty value is ignored instead of being rejected, same behavior as results= and category= (empty)."
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Method",
+              "item": [
+                {
+                  "name": "Products wrong method POST",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"The resource could not be found. Check your endpoint and request method.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ]
+                    },
+                    "description": "Expected: not defined in the API documentation (only GET /products is described).  \nActual: 404 Not Found with the generic \"resource could not be found\" message.  \nNote: by HTTP convention an unsupported method on an existing route would usually return 405 Method Not Allowed, so this is an observation, not a confirmed defect. The test asserts the current stable behavior."
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Get a product",
+              "item": []
+            }
+          ]
+        },
+        {
+          "name": "Get All Products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response is an array\", function () {\r\n    pm.expect(pm.response.json()).to.be.an(\"array\");\r\n});\r\n\r\npm.test(\"Array is not empty\", function () {\r\n    pm.expect(pm.response.json().length).to.be.above(0);\r\n});\r\n\r\npm.test(\"First product has required fields\", function () {\r\n    const product = pm.response.json()[0];\r\n    pm.expect(product).to.have.property(\"id\");\r\n    pm.expect(product).to.have.property(\"category\");\r\n    pm.expect(product).to.have.property(\"name\");\r\n    pm.expect(product).to.have.property(\"inStock\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "Cart Items",
+          "item": []
+        },
+        {
+          "name": "Positive",
+          "item": [
+            {
+              "name": "Create Cart",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {\r",
+                      "    pm.response.to.have.status(201);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Cart was created\", function () {\r",
+                      "    const response = pm.response.json();\r",
+                      "    pm.expect(response.created).to.eql(true);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Response has cartId\", function () {\r",
+                      "    const response = pm.response.json();\r",
+                      "    pm.expect(response).to.have.property(\"cartId\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.environment.set(\"cartId\", pm.response.json().cartId);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/carts",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "carts"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Cart (Empty)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/carts/{{cartId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "carts",
+                    "{{cartId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Add Item to Cart",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {\r",
+                      "    pm.response.to.have.status(201);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Response has itemId\", function () {\r",
+                      "    const response = pm.response.json();\r",
+                      "    pm.expect(response).to.have.property(\"itemId\");\r",
+                      "});\r",
+                      "\r",
+                      "pm.environment.set(\"itemId\", pm.response.json().itemId);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"productId\": 1709,\r\n    \"quantity\": 1\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/carts/{{cartId}}/items",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "carts",
+                    "{{cartId}}",
+                    "items"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Cart (With Items)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Cart contains added items\", function () {\r",
+                      "    const response = pm.response.json();\r",
+                      "    pm.expect(response.items).to.be.an(\"array\").with.length.above(0);\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/carts/{{cartId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "carts",
+                    "{{cartId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Negative",
+          "item": []
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Positive",
+          "item": []
+        },
+        {
+          "name": "Negative",
+          "item": []
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": []
+    }
+  ]
+}
