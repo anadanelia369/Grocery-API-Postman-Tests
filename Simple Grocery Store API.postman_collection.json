@@ -540,7 +540,7 @@
                   "response": []
                 },
                 {
-                  "name": "Get Products results=empty",
+                  "name": "Get Products results=empty[Known Issue]",
                   "event": [
                     {
                       "listen": "test",
@@ -683,7 +683,7 @@
                   "response": []
                 },
                 {
-                  "name": "Get Products category=empty",
+                  "name": "Get Products category=empty[Known Issue]",
                   "event": [
                     {
                       "listen": "test",
@@ -825,7 +825,7 @@
                   "response": []
                 },
                 {
-                  "name": "Get Products available=empty",
+                  "name": "Get Products available=empty[Known Issue]",
                   "event": [
                     {
                       "listen": "test",
@@ -892,12 +892,376 @@
                     "description": "Expected: not defined in the API documentation (only GET /products is described).  \nActual: 404 Not Found with the generic \"resource could not be found\" message.  \nNote: by HTTP convention an unsupported method on an existing route would usually return 405 Method Not Allowed, so this is an observation, not a confirmed defect. The test asserts the current stable behavior."
                   },
                   "response": []
+                },
+                {
+                  "name": "Product wrong method DELETE",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"The resource could not be found. Check your endpoint and request method.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products/1225",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products",
+                        "1225"
+                      ]
+                    },
+                    "description": "Expected: not defined in the API documentation (only GET /products/:productId is described).  \nActual: 404 Not Found with the generic \"resource could not be found\" message.  \nNote: by HTTP convention an unsupported method on an existing route would usually return 405 Method Not Allowed, so this is an observation, not a confirmed defect. The test asserts the current stable behavior."
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Products HEAD",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "HEAD",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ]
+                    },
+                    "description": "Expected: not defined in the API documentation (only GET /products is described).  \nActual: 404 Not Found.  \nNote: HEAD responses have no body by definition, so only the status code is asserted. By HTTP convention HEAD should mirror GET (200 OK), so this is an observation, not a confirmed defect. The test asserts the current stable behavior."
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Products OPTIONS",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 204\", function () {\r\n    pm.response.to.have.status(204);\r\n});\r\n\r\npm.test(\"Allowed methods header is present\", function () {\r\n    pm.response.to.have.header(\"Access-Control-Allow-Methods\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "OPTIONS",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products"
+                      ]
+                    },
+                    "description": "Expected: not defined in the API documentation (only GET /products is described).  \nActual: 204 No Content with the header Access-Control-Allow-Methods: OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD.  \nNote: this looks like a generic CORS configuration shared by all routes. It lists methods that the /products route does not actually support (POST and HEAD return 404), so it is an observation, not a confirmed defect."
+                  },
+                  "response": []
                 }
               ]
             },
             {
               "name": "Get a product",
-              "item": []
+              "item": [
+                {
+                  "name": "Get a Product id=9999",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"No product with id 9999.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products/:productId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products",
+                        ":productId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "productId",
+                          "value": "9999"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get a Product id=abc",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"The product id must be a number.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products/:productId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products",
+                        ":productId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "productId",
+                          "value": "abc"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get a Product id=0",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"No product with id 0.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products/:productId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products",
+                        ":productId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "productId",
+                          "value": "0"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "New Request",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get a Product id=-1",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"No product with id -1.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products/:productId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products",
+                        ":productId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "productId",
+                          "value": "-1"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get a Product product-label=abc",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"Invalid value for query parameter 'product-label'. Must be one of: true, false\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products/:productId?product-label=abc",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products",
+                        ":productId"
+                      ],
+                      "query": [
+                        {
+                          "key": "product-label",
+                          "value": "abc"
+                        }
+                      ],
+                      "variable": [
+                        {
+                          "key": "productId",
+                          "value": "1225"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get a Product product-label=empty [Known Issue]",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products/:productId?product-label",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products",
+                        ":productId"
+                      ],
+                      "query": [
+                        {
+                          "key": "product-label",
+                          "value": ""
+                        }
+                      ],
+                      "variable": [
+                        {
+                          "key": "productId",
+                          "value": "1225"
+                        }
+                      ]
+                    },
+                    "description": "Expected: 400 Bad Request, since \"product-label\" must be one of: true, false (the same rule that rejects product-label=abc).  \nActual: 200 OK and the product is returned without the label.  \nNote: the empty value is ignored instead of being rejected, same behavior as results=, category= and available= (empty)."
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get a Product product-label=TRUE",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"Invalid value for query parameter 'product-label'. Must be one of: true, false\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/products/:productId?product-label=TRUE",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "products",
+                        ":productId"
+                      ],
+                      "query": [
+                        {
+                          "key": "product-label",
+                          "value": "TRUE"
+                        }
+                      ],
+                      "variable": [
+                        {
+                          "key": "productId",
+                          "value": "1225"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
             }
           ]
         },
@@ -942,182 +1306,1117 @@
           "name": "Positive",
           "item": [
             {
-              "name": "Create Cart",
-              "event": [
+              "name": "Create a new cart",
+              "item": [
                 {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "pm.test(\"Status code is 201\", function () {\r",
-                      "    pm.response.to.have.status(201);\r",
-                      "});\r",
-                      "\r",
-                      "pm.test(\"Cart was created\", function () {\r",
-                      "    const response = pm.response.json();\r",
-                      "    pm.expect(response.created).to.eql(true);\r",
-                      "});\r",
-                      "\r",
-                      "pm.test(\"Response has cartId\", function () {\r",
-                      "    const response = pm.response.json();\r",
-                      "    pm.expect(response).to.have.property(\"cartId\");\r",
-                      "});\r",
-                      "\r",
-                      "pm.environment.set(\"cartId\", pm.response.json().cartId);"
-                    ],
-                    "type": "text/javascript",
-                    "packages": {},
-                    "requests": {}
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/carts",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "carts"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Get Cart (Empty)",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "pm.test(\"Status code is 200\", function () {\r",
-                      "    pm.response.to.have.status(200);\r",
-                      "});"
-                    ],
-                    "type": "text/javascript",
-                    "packages": {},
-                    "requests": {}
-                  }
-                }
-              ],
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/carts/{{cartId}}",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "carts",
-                    "{{cartId}}"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Add Item to Cart",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "pm.test(\"Status code is 201\", function () {\r",
-                      "    pm.response.to.have.status(201);\r",
-                      "});\r",
-                      "\r",
-                      "pm.test(\"Response has itemId\", function () {\r",
-                      "    const response = pm.response.json();\r",
-                      "    pm.expect(response).to.have.property(\"itemId\");\r",
-                      "});\r",
-                      "\r",
-                      "pm.environment.set(\"itemId\", pm.response.json().itemId);"
-                    ],
-                    "type": "text/javascript",
-                    "packages": {},
-                    "requests": {}
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n    \"productId\": 1709,\r\n    \"quantity\": 1\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
+                  "name": "Create Cart",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Status code is 201\", function () {\r",
+                          "    pm.response.to.have.status(201);\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Cart was created\", function () {\r",
+                          "    const response = pm.response.json();\r",
+                          "    pm.expect(response.created).to.eql(true);\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Response has cartId\", function () {\r",
+                          "    const response = pm.response.json();\r",
+                          "    pm.expect(response).to.have.property(\"cartId\");\r",
+                          "});\r",
+                          "\r",
+                          "pm.environment.set(\"cartId\", pm.response.json().cartId);"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
                     }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/carts/{{cartId}}/items",
-                  "host": [
-                    "{{baseUrl}}"
                   ],
-                  "path": [
-                    "carts",
-                    "{{cartId}}",
-                    "items"
-                  ]
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/carts",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts"
+                      ]
+                    }
+                  },
+                  "response": []
                 }
-              },
-              "response": []
+              ]
             },
             {
-              "name": "Get Cart (With Items)",
-              "event": [
+              "name": "Get a cart",
+              "item": [
                 {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "pm.test(\"Status code is 200\", function () {\r",
-                      "    pm.response.to.have.status(200);\r",
-                      "});\r",
-                      "\r",
-                      "pm.test(\"Cart contains added items\", function () {\r",
-                      "    const response = pm.response.json();\r",
-                      "    pm.expect(response.items).to.be.an(\"array\").with.length.above(0);\r",
-                      "});"
-                    ],
-                    "type": "text/javascript",
-                    "packages": {},
-                    "requests": {}
-                  }
-                }
-              ],
-              "protocolProfileBehavior": {
-                "disableBodyPruning": true
-              },
-              "request": {
-                "method": "GET",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": ""
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/carts/{{cartId}}",
-                  "host": [
-                    "{{baseUrl}}"
+                  "name": "Get Cart (Empty)",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Status code is 200\", function () {\r",
+                          "    pm.response.to.have.status(200);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
                   ],
-                  "path": [
-                    "carts",
-                    "{{cartId}}"
-                  ]
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/{{cartId}}",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        "{{cartId}}"
+                      ]
+                    }
+                  },
+                  "response": []
                 }
-              },
-              "response": []
+              ]
+            },
+            {
+              "name": "Add an item to cart",
+              "item": [
+                {
+                  "name": "Add Item to Cart",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Status code is 201\", function () {\r",
+                          "    pm.response.to.have.status(201);\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Response has itemId\", function () {\r",
+                          "    const response = pm.response.json();\r",
+                          "    pm.expect(response).to.have.property(\"itemId\");\r",
+                          "});\r",
+                          "\r",
+                          "pm.environment.set(\"itemId\", pm.response.json().itemId);"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"productId\": 1709,\r\n    \"quantity\": 1\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/{{cartId}}/items",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        "{{cartId}}",
+                        "items"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get Cart (With Items)",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Status code is 200\", function () {\r",
+                          "    pm.response.to.have.status(200);\r",
+                          "});\r",
+                          "\r",
+                          "pm.test(\"Cart contains added items\", function () {\r",
+                          "    const response = pm.response.json();\r",
+                          "    pm.expect(response.items).to.be.an(\"array\").with.length.above(0);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": ""
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/{{cartId}}",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        "{{cartId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Modify an item in the cart",
+              "item": [
+                {
+                  "name": "Modify Item quantity",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 204\", function () {\r\n    pm.response.to.have.status(204);\r\n});\r\n\r\npm.test(\"Response body is empty\", function () {\r\n    pm.expect(pm.response.text()).to.eql(\"\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "PATCH",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"quantity\": 3\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId/items/:itemId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId",
+                        "items",
+                        ":itemId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "{{cartId}}"
+                        },
+                        {
+                          "key": "itemId",
+                          "value": "{{itemId}}"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get Cart (After Modify)",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Item quantity was updated to 3\", function () {\r\n    const items = pm.response.json().items;\r\n    const item = items.find(function (i) {\r\n        return i.id == pm.environment.get(\"itemId\");\r\n    });\r\n    pm.expect(item.quantity).to.eql(3);\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "{{cartId}}"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Replace an item in the cart",
+              "item": [
+                {
+                  "name": "Replace Item",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 204\", function () {\r\n    pm.response.to.have.status(204);\r\n});\r\n\r\npm.test(\"Response body is empty\", function () {\r\n    pm.expect(pm.response.text()).to.eql(\"\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"productId\": 3674,\r\n    \"quantity\": 2\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId/items/:itemId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId",
+                        "items",
+                        ":itemId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "{{cartId}}"
+                        },
+                        {
+                          "key": "itemId",
+                          "value": "{{itemId}}"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get Cart (After Replace)",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Item was replaced with productId 3674 and quantity 2\", function () {\r\n    const items = pm.response.json().items;\r\n    const item = items.find(function (i) {\r\n        return i.id == pm.environment.get(\"itemId\");\r\n    });\r\n    pm.expect(item.productId).to.eql(3674);\r\n    pm.expect(item.quantity).to.eql(2);\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "{{cartId}}"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
             }
           ]
         },
         {
           "name": "Negative",
-          "item": []
+          "item": [
+            {
+              "name": "Get a cart",
+              "item": [
+                {
+                  "name": "Get Cart cartId=invalid",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"No cart with id abc123.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "abc123"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get Cart wrong method DELETE",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"The resource could not be found. Check your endpoint and request method.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "{{cartId}}"
+                        }
+                      ]
+                    },
+                    "description": "Expected: not defined in the API documentation (only GET /carts/:cartId is described for reading a cart).  \nActual: 404 Not Found with the generic \"resource could not be found\" message.  \nNote: by HTTP convention an unsupported method on an existing route would usually return 405 Method Not Allowed, so this is an observation, not a confirmed defect. The test asserts the current stable behavior."
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Add an item to cart",
+              "item": [
+                {
+                  "name": "Add Item productId=duplicate",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.sendRequest({\r\n    url: pm.environment.get(\"baseUrl\") + \"/carts/\" + pm.environment.get(\"cartId\") + \"/items\",\r\n    method: \"POST\",\r\n    header: { \"Content-Type\": \"application/json\" },\r\n    body: {\r\n        mode: \"raw\",\r\n        raw: JSON.stringify({ productId: 1225, quantity: 1 })\r\n    }\r\n}, function (err, res) {\r\n    if (err) { console.log(err); }\r\n});"
+                        ]
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"This product has already been added to cart.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"productId\": 1225,\r\n    \"quantity\": 1\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId/items",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId",
+                        "items"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "{{cartId}}"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Add Item productId=9999",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"Invalid or missing productId.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"productId\": 9999,\r\n    \"quantity\": 1\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId/items",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId",
+                        "items"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "{{cartId}}"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Add Item productId=missing",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"Invalid or missing productId.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"quantity\": 1\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId/items",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId",
+                        "items"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "{{cartId}}"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Add Item quantity=0 [Known Issue]",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});"
+                        ]
+                      }
+                    },
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.sendRequest({\r\n    url: pm.environment.get(\"baseUrl\") + \"/carts\",\r\n    method: \"POST\"\r\n}, function (err, res) {\r\n    if (!err) {\r\n        pm.environment.set(\"tempCartId\", res.json().cartId);\r\n    }\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"productId\": 2177,\r\n    \"quantity\": 0\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId/items",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId",
+                        "items"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "{{tempCartId}}"
+                        }
+                      ]
+                    },
+                    "description": "Expected (business logic): 400 Bad Request, since a quantity of 0 makes no sense for a cart item.  \nActual: 201 Created, the item is added to the cart with quantity 0.  \nNote: the API documentation only states that quantity is an optional integer (default 1) and does not define a valid range, so this is not a confirmed documentation violation. It is a suspected business-logic defect, confirmed on two different products (1710 and 2177)\n\nAdditional evidence: GET /carts/:cartId shows the item stored with quantity 0. Also, PATCH /carts/:cartId/items/:itemId rejects quantity=0 with 400 (\"Invalid or missing quantity.\"), so the API treats the same value differently depending on the endpoint.EndFragment"
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Add Item quantity=-1[Known Issue]",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});"
+                        ]
+                      }
+                    },
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.sendRequest({\r\n    url: pm.environment.get(\"baseUrl\") + \"/carts\",\r\n    method: \"POST\"\r\n}, function (err, res) {\r\n    if (!err) {\r\n        pm.environment.set(\"tempCartId\", res.json().cartId);\r\n    }\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"productId\": 3486,\r\n    \"quantity\": -1\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId/items",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId",
+                        "items"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "{{tempCartId}}"
+                        }
+                      ]
+                    },
+                    "description": "Expected (business logic): 400 Bad Request, since a negative quantity makes no sense for a cart item.  \nActual: 201 Created, the item is added to the cart with quantity -1.  \nNote: the API documentation only states that quantity is an optional integer (default 1) and does not define a valid range, so this is not a confirmed documentation violation. It is a suspected business-logic defect, confirmed on two different products (2585 and 3486).\n\nAdditional evidence: GET /carts/:cartId shows the item stored with quantity -1. Also, PATCH /carts/:cartId/items/:itemId rejects quantity=-1 with 400 (\"Invalid or missing quantity.\"), so the API treats the same value differently depending on the endpoint."
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Replace an item in the cart",
+              "item": [
+                {
+                  "name": "Replace Item productId=missing [Known Issue]",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"quantity\": 2\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId/items/:itemId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId",
+                        "items",
+                        ":itemId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "{{cartId}}"
+                        },
+                        {
+                          "key": "itemId",
+                          "value": "{{itemId}}"
+                        }
+                      ]
+                    },
+                    "description": "Expected (per API documentation): 400 Bad Request, since productId is required and the documentation states that invalid or missing parameters return 400.  \nActual: 204 No Content, the request without productId is accepted as a successful update.  \nNote: the response body is empty, so it is not visible what happened to the item. The same pattern was observed on PATCH when quantity is missing."
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Replace Item productId=abc",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"Invalid or missing productId.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"productId\": \"abc\",\r\n    \"quantity\": 2\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId/items/:itemId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId",
+                        "items",
+                        ":itemId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "{{cartId}}"
+                        },
+                        {
+                          "key": "itemId",
+                          "value": "{{itemId}}"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Modify an item in the cart",
+              "item": [
+                {
+                  "name": "Modify Item itemId=invalid",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"No item with id 999999999 in this cart.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "PATCH",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"quantity\": 3\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId/items/:itemId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId",
+                        "items",
+                        ":itemId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "{{cartId}}"
+                        },
+                        {
+                          "key": "itemId",
+                          "value": "999999999"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Modify Item quantity=missing[Known Issue]",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "PATCH",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId/items/:itemId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId",
+                        "items",
+                        ":itemId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "{{cartId}}"
+                        },
+                        {
+                          "key": "itemId",
+                          "value": "{{itemId}}"
+                        }
+                      ]
+                    },
+                    "description": "Expected (per API documentation): 400 Bad Request, since quantity is required and the documentation states that invalid or missing parameters return 400.  \nActual: 204 No Content, the empty request body {} is accepted as a successful update.  \nNote: the response body is empty, so it is not visible whether the item quantity was changed, reset or left as it was.EndFragment"
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Modify Item quantity=abc",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"Invalid or missing quantity.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "PATCH",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"quantity\": \"abc\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId/items/:itemId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId",
+                        "items",
+                        ":itemId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "{{cartId}}"
+                        },
+                        {
+                          "key": "itemId",
+                          "value": "{{itemId}}"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Modify Item quantity=0",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"Invalid or missing quantity.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "PATCH",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"quantity\": 0\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId/items/:itemId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId",
+                        "items",
+                        ":itemId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "{{cartId}}"
+                        },
+                        {
+                          "key": "itemId",
+                          "value": "{{itemId}}"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Modify Item quantity=-1",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"Invalid or missing quantity.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "PATCH",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"quantity\": -1\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId/items/:itemId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId",
+                        "items",
+                        ":itemId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "{{cartId}}"
+                        },
+                        {
+                          "key": "itemId",
+                          "value": "{{itemId}}"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Modify Item wrong method GET",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    const response = pm.response.json();\r\n    pm.expect(response.error).to.eql(\"The resource could not be found. Check your endpoint and request method.\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/carts/:cartId/items/:itemId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "carts",
+                        ":cartId",
+                        "items",
+                        ":itemId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "cartId",
+                          "value": "{{cartId}}"
+                        },
+                        {
+                          "key": "itemId",
+                          "value": "{{itemId}}"
+                        }
+                      ]
+                    },
+                    "description": "Expected: not defined in the API documentation (GET is not described for /carts/:cartId/items/:itemId, only PATCH, PUT and DELETE).  \nActual: 404 Not Found with the generic \"resource could not be found\" message.  \nNote: by HTTP convention an unsupported method on an existing route would usually return 405 Method Not Allowed, so this is an observation, not a confirmed defect. The test asserts the current stable behavior."
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
         }
       ]
     },
