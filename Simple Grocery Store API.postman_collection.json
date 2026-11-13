@@ -1092,17 +1092,6 @@
                   "response": []
                 },
                 {
-                  "name": "New Request",
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "url": {
-                      "raw": ""
-                    }
-                  },
-                  "response": []
-                },
-                {
                   "name": "Get a Product id=-1",
                   "event": [
                     {
